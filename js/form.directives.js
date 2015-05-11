@@ -1,22 +1,21 @@
-angular.module('form.directives', []).
-	directive('materialInputText', function() {
+angular.module('appfront.form.directives', []).
+	directive('afInputText', function() {
 	return {
 		restrict: 'A',
 		scope: {
-			title: "@",
-			placeholder: "@",
-			model: "=",
-			pattern: "@",
-			patternError: "@",
-			minlength: "@",
-			floatingTitle: "@",
-			icon: "@",
-			disabled: "=",
-			inline: "@",
-			inverted: "@",
-			inputType: "@"
+			title: "@afTitle",
+			placeholder: "@afPlaceholder",
+			model: "=afModel",
+			pattern: "@afPattern",
+			patternError: "@afPatternError",
+			minlength: "@afMinLength",
+			floatingTitle: "@afFloatingTitle",
+			icon: "@afIcon",
+			disabled: "=afDisabled",
+			inputType: "@afInputType",
+			class: "@afClass"
 		},
-		template: '<div class="material-input" ng-class="{icon: icon, disabled: disabled, \'material-input-inline\': inline, \'material-input-inverted\': inverted}" >' +
+		template: '<div class="material-input {{class}}" ng-class="{icon: icon, disabled: disabled}" >' +
 					'<span ng-if="icon" class="fa fa-{{icon}} fa-lg material-icon"/>' +
 					'<div class="form-group form-group-material" ng-class="{ focus: hasfocus, error: haserror, floatingtitle: floatingTitle, hasvalue: model.length > 0}">' +
 					'<label>{{ title }}</label>' +
@@ -95,17 +94,17 @@ angular.module('form.directives', []).
 			}
 		}
 	};		
-}).directive('materialInputCheckbox', function() {
+}).directive('afCheckbox', function() {
 	return {
 		restrict: 'A',
 		scope: {
-			title: "@",
-			inline: "@",
-			model: "=",
-			value: "@",
-			icon: "@",
+			title: "@afTitle",
+			class: "@afClass",
+			model: "=afModel",
+			value: "@afValue",
+			icon: "@afIcon",
 		},
-		template: '<div class="material-input material-input-checkbox" ng-class="{checked: isChecked(), \'material-input-inline\': inline}" ng-click="toggle();">' +
+		template: '<div class="material-input material-input-checkbox {{ class }}" ng-class="{checked: isChecked()}" ng-click="toggle();">' +
 					 '<label>{{ title }}</label>' +
 					 '<div class="material-checkbox-ink"></div>' +
 					 '<div class="material-checkbox-box">' +
@@ -138,12 +137,12 @@ angular.module('form.directives', []).
 			}
 		}
 	};		
-}).directive('paginatedTable', function() {
+}).directive('afPaginatedTable', function() {
 	return {
 		restrict: 'A',
 		scope: {
-			objects: "=",
-			pageSize: "@",
+			objects: "=afObjects",
+			pageSize: "@afPageSize",
 		},
 		template: '<table>' +
 					 '<tfoot class="text-center"><tr><td colspan="100">' +
@@ -228,11 +227,11 @@ angular.module('form.directives', []).
 
 		}
 	};		
-}).directive('tableHeader', function() {
+}).directive('afTableHeader', function() {
 	return {
 		restrict: 'A',
 		scope: {
-			tbField: "@",
+			field: "@afField",
 		},
 		template: '<a ng-click="dosort();"><span ng-transclude></span> {{ arrow }}<a>',
 		transclude: true,
@@ -245,7 +244,7 @@ angular.module('form.directives', []).
 			scope.$parent.$watch("sort", function(val) {
 				if(val == null)
 					return;
-				if(val.field == scope.tbField) {
+				if(val.field == scope.field) {
 					scope.arrow = val.ascending ? dir_up : dir_down;
 				} else {
 					scope.arrow = " ";
@@ -255,27 +254,32 @@ angular.module('form.directives', []).
 
 			scope.dosort = function() {
 				var sort = scope.$parent.sort;
-				if(sort.field == scope.tbField)
+				if(sort.field == scope.field)
 					sort.ascending = !sort.ascending;
 				else {
-					sort.field = scope.tbField;
+					sort.field = scope.field;
 					sort.ascending = true;
 				}
 				scope.$parent.resort();
 			}
 		}
 	};		
-}).directive('mdReversibleCard', function() {
+}).directive('afReversibleCard', function() {
 	return {
 		restrict: 'A',
-		template: '<div class="box box-card {{mdClass}}" ng-click="flip();" ng-class="{\'card-reversed\': isFlipped}"><div ng-transclude></div></div>',
+		template: '<div class="reversible-container">' +
+			'<div class="reversible-flipper {{afClass}}" ng-class="{\'reversible-flipper-flipped\': isFlipped}" style="transform-style: preserve-3d;">' +
+			'<div ng-transclude></div></div>',
 		replace: true,
 		transclude: true,
 		scope: {
-			"mdClass": "@",
+			"afClass": "@",
 		},
 	    link: function(scope, elem, attr, controller, transcludeFn) {
-	    	
+	    	//transcludeFn( scope, function( content ) {
+                
+              //  elem.find("div.reversible-flipper").append( content );
+            //});
 	    	scope.isFlipped = false;
 			scope.flip = function() {
 				scope.isFlipped = !scope.isFlipped;

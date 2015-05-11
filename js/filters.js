@@ -1,4 +1,4 @@
-angular.module('free.admin.filters', [])
+angular.module('appfront.filters', [])
 
 
 	.filter('offset', function() {
@@ -112,103 +112,6 @@ angular.module('free.admin.filters', [])
 	})
 
 
-	.filter('translate', function() {
-		return function(input) {
-			if(input == null)
-				return "";
-
-			switch(input.toLowerCase()) {
-				case "tn":
-					return "familjepension";
-				case "waiver":
-					return "premiebefrielse";
-				case "disability":
-					return "sjukförsäkring";
-				case "fund":
-					return "fondförsäkring";
-				case "outside-area":
-					return "utanför premieutrymme";
-				case "within-area":
-					return "inom premieutrymme";
-				case "salary":
-					return "lön";
-				case "amount":
-					return "belopp";
-				case "pa":
-					return "premieutrymme";
-				case "person":
-					return "individ";
-				case "itp-se":
-					return "ITP1 Löneväxling";
-				case "itp2-se":
-					return "ITP2 Löneväxling";
-			}
-
-			return input;
-		}
-	})
-
-	.filter('renderMod', function() {
-
-		var dict = {
-			"pricing": "prissättning",
-			"amount": "belopp",
-			"premium": "premie",
-			"basepremium": "grundpremie",
-			"startdate": "startdatum",
-			"allocation": "allokering",
-			"reporteddate": "inrapporteringsdatum",
-			"salary": "lön",
-			"pa": "premieutrymme",
-			"amount-first": "belopp första karens",
-			"amount-second": "belopp andra karens",
-			"amount-third": "belopp tredje karens",
-			"preview": "flagga för förhandsgranskning",
-		}
-
-		return function(mod) {
-
-			if(mod == null)
-				return "";
-
-			if(mod["@attribute"] == null)
-				return mod["@description"];
-
-
-
-			var s = "Sätt ";
-
-			if(mod["@fromValue"] != null)
-				s = "Uppdatera ";
-
-			var attr = mod["@attribute"].toLowerCase();
-			
-			var attrName = dict[attr];
-			if(attrName == null)
-				attrName = attr;
-
-			if(mod["@type"] == "deleteattribute")
-				return "Ta bort " + attrName;
-
-			s += attrName;
-			if(mod["@fromValue"] != null)
-				s += " från " + mod["@fromValue"];
-			if(mod["@toValue"] != null)
-				s += " till " + mod["@toValue"];
-
-			return s;
-		}
-	})
-	.filter('extractTitle', function() {
-		return function(input) {
-			var re = /<title>([^<]+)/gi;
-			var m = re.exec(input);
-			if(m == null || m[0] == null)
-				return "No description";
-			return m[1];
-
-		}
-	})
 	.filter('dateSort', function() {
 
 		return function(input, column) {

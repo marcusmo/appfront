@@ -1,0 +1,136 @@
+
+.btn-default {
+	border-color: #e2e2e2;
+	background-color: #eee;
+	color: @c_primary;	
+	&:hover {
+		color: @c_primaryDark;
+		background-color: #ddd;
+		border-color: #d2d2d2;
+	}
+}
+.btn.btn-success {
+	border-color: @c_alternate;
+	background-color: @c_alternate;
+	color: #fff;
+
+	&:hover {
+		background-color: darken(@c_alternate, 5%);
+		border-color: darken(@c_alternate, 5%);
+	}
+}
+.btn-primary {
+	border-color: @c_primary;
+	background-color: @c_primary;
+	color: #fff;
+
+	&:hover {
+		background-color: darken(@c_primary, 10%);
+		border-color: darken(@c_primary, 10%);
+	}
+}
+
+.navbar.navbar-default {
+	height: 80px;
+}
+.navbar-default .nav > li > a {
+	padding: 30px 15px;
+	font-size: 14pt;
+	font-weight: 300;
+	//color: #fff;
+}
+
+.navbar.navbar-default {
+	background-color: @c_background;
+	border-bottom: 1px dotted #ccc;
+	//background-color: @c_primary;
+	//color: #fff;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+	background-color: @c_primary;
+	
+}
+
+	.badge {
+		background-color: @c_primary;
+	}
+
+.container-fluid {
+	margin-left: 30px;
+	margin-right: 30px;
+}
+
+
+
+	.toolbar {
+		margin-top: 10px;
+		margin-bottom: 20px;
+		padding-bottom: 10px;
+		apadding-top: 10px;
+		float: left;
+		width: 100%;
+		clear: both;
+		box-sizing: border-box;
+
+	}
+
+		.toolbar.toolbar-box {
+			padding: 10px;
+			background-color: @c_box;
+		}
+	.toolbar-items a.btn {
+		margin-top: -7px;
+		margin-bottom: -7px;
+
+	}
+	.toolbar-items-left {
+		float: left;
+		a {
+			margin-right: 15px;
+		}
+	}
+
+	.toolbar-items-right {
+		float: right;
+		a {
+			margin-left: 15px;
+		}
+	}
+		.toolbar-nav {
+			float: left;
+			margin-top: -20px;
+			margin-bottom: -20px;
+		}
+
+		.toolbar-nav a {
+			border-right: 1px solid #ccc;
+			display: block;
+			float: left;
+			padding: 20px;
+		}
+
+
+			.toolbar-nav a:first-child {
+				border-left: 1px solid #ccc;
+			}
+				.toolbar-nav a.active {
+					background-color: @c_primary;
+					color: #fff;
+				}
+
+		.toolbar-items a {
+			font-weight: 500;
+			font-size: 13pt;
+			
+		}
+
+		.toolbar.toolbar-top {
+			aborder-bottom: 1px inset #ccc;
+			padding-left: 20px;
+			padding-right: 20px;
+			background-color: @c_box;
+			padding: 20px;
+			box-shadow: @s_box;
+
+		}

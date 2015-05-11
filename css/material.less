@@ -1,24 +1,24 @@
 
 
-	.form-group.form-group-material {
+.form-group.form-group-material {
 	margin-bottom: 0px;
 	margin-top: 10px;
 	clear: left;
 }
-	.form-group-material {
-.form-control {
-	background-color: transparent;
-	border: none;
-	border-radius: 0;
-	box-shadow: none;
-	line-height: 1em;
-	font-size: 13pt;
-	padding: 3px 0px 6px 0px;
-	outline: none;
-	margin-left: 0;
-	color: #000;
-	height: auto;
-}
+.form-group-material {
+	.form-control {
+		background-color: transparent;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+		line-height: 1em;
+		font-size: 13pt;
+		padding: 3px 0px 6px 0px;
+		outline: none;
+		margin-left: 0;
+		color: #000;
+		height: auto;
+	}
 	.form-control:focus {
 		
 		box-shadow: none;
@@ -364,6 +364,16 @@
 				padding: 0;
 			}
 
+			.box-header.box-header-sm {
+				padding: 15px 20px 10px 20px;
+				h3 {
+					font-size: 12pt;
+					margin-top: 2px;
+					display: inline;
+					float: none;
+				}
+			}
+
 			.box-header-items a.btn {
 				font-size: 10pt;
 				margin-top: -3px;
@@ -373,12 +383,20 @@
 
 		.box-header.box-header-primary {
 			background-color: @c_primary;
+			border-color: transparent;
 			color: #fff;
 		}
 		.box-header.box-header-gray {
 			background-color: @c_gray;
+			border-color: transparent;
 			color: #fff;
 		}
+		.box-header.box-header-alternate {
+			background-color: @c_alternate;
+			border-color: transparent;
+			color: #fff;
+		}
+		
 
 	.box.box-primary {
 		background-color: @c_primary;
@@ -389,7 +407,53 @@
 		}
 	}
 
+	.reversible-container {
+		
+		
+		z-index: 6;
+
+		//-webkit-perspective-origin: 50% 50%;
 	
+		// Container needs height to show non clipped top animation
+		.reversible-flipper {
+			width: 100%;
+			transition: transform 0.3s ease-out;
+			perspective: 800px;
+		}
+
+
 	
+		.reversible-flipper.reversible-flipper-flipped {
+			//transform: rotateY(180deg);
+		}
+
+		.reversible-flipper.reversible-flipper-flipped .reversible-front {
+			//display: none;
+		}
+		.reversible-flipper.reversible-flipper-flipped .reversible-front {
+			transform: rotateY(180deg);
+		}
+		.reversible-flipper.reversible-flipper-flipped .reversible-back {
+			transform: rotateY(0deg);
+		}
+
+		.reversible-back,
+		.reversible-front {
+			backface-visibility: hidden;
+			ms-backface-visibility: hidden;
+			position: absolute;
+			width: 100%;
+			transition: transform 0.3s ease-out;
+		}
+
+		.reversible-back {
+		
+			transform: rotateY(-180deg);
+		}
+		.reversible-front {
+			z-index: 4;
+			transform: rotateY(0deg);
+		}
+	}
 
 	
