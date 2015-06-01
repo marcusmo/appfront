@@ -106,9 +106,10 @@ angular.module('appfront.form.directives', []).
 			icon: "@afIcon",
 			mode: "@afMode",
 			modelParent: "=afModelParent",
-			modelName: "@afModelName"
+			modelName: "@afModelName",
+			disabled: "=afDisabled"
 		},
-		template: '<div class="material-input material-input-checkbox {{ class }}" ng-class="{checked: isChecked()}" ng-click="toggle();">' +
+		template: '<div class="material-input material-input-checkbox {{ class }}" ng-class="{checked: isChecked(), \'input-disabled\': (disabled == true)}" ng-click="toggle();">' +
 					 '<label>{{ title }}</label>' +
 					 '<div class="material-checkbox-ink"></div>' +
 					 '<div class="material-checkbox-box">' +
@@ -123,22 +124,35 @@ angular.module('appfront.form.directives', []).
 			});
 
 			scope.toggle = function() {
+				if(scope.disabled == true)
+					return;
 				if(scope.value) {
 					if(!scope.isChecked())
 						scope.model = scope.value;
-					else if(scope.mode == "delete")
+					else if(scope.mode == "delete") {
+						if(!scope.modelParent || !scope.modelName)
+							throw "Must set af-model-parent and af-model-name on checkbox with mode 'delete'";
 						delete scope.modelParent[scope.modelName];
+					}
 				} else {
-					if(scope.model)
-						scope.model = false;
-					else
-						scope.model = true;	
+					if(scope.mode == "clear") {
+						if(scope.model)
+							delete scope.modelParent[scope.modelName];
+					} else {
+						if(scope.model)
+							scope.model = false;
+						else
+							scope.model = true;	
+					}
 				}
 				
 			}
 			scope.isChecked = function() {
 				if(scope.value)
 					return scope.model == scope.value;
+				if(scope.mode == "clear")
+					return scope.model == null;
+				
 				return scope.model != null && scope.model == true;
 			}
 		}
