@@ -212,3 +212,23 @@
 			box-shadow: @s_box;
 
 		}
+
+	.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+		background-color: transparent;
+		border-color: #ccc;
+		border-bottom-color: @c_background;
+
+	}
+
+
+	.nav-center.nav-tabs > li, .nav-center.nav-pills > li {
+		float:none;
+		display:inline-block;
+		*display:inline; /* ie7 fix */
+		zoom:1; /* hasLayout ie7 trigger */
+	}
+
+.nav-center.nav-tabs, .nav-center.nav-pills {
+    text-align:center;
+    border-color: #ccc;
+}
