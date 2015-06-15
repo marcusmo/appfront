@@ -14,10 +14,11 @@ angular.module('appfront.form.directives', []).
 			disabled: "=afDisabled",
 			inputType: "@afInputType",
 			class: "@afClass"
+			
 		},
 		template: '<div class="material-input {{class}}" ng-class="{icon: icon, disabled: disabled}" >' +
 					'<span ng-if="icon" class="fa fa-{{icon}} fa-lg material-icon"/>' +
-					'<div class="form-group form-group-material" ng-class="{ focus: hasfocus, error: haserror, floatingtitle: floatingTitle, hasvalue: model.length > 0}">' +
+					'<div class="form-group form-group-material" ng-class="{ focus: hasfocus, error: haserror, floatingtitle: floatingTitle, hasvalue: model > 0 || model.length > 0}">' +
 					'<label>{{ title }}</label>' +
 					'<div class="input-group">' +
 						'<input class="form-control" type="{{inputType}}" ng-model="model" placeholder="{{ placeholderWrapper }}" ng-focus="focus();" ng-blur="blur();" ng-disabled="disabled"></input>' +
@@ -35,8 +36,9 @@ angular.module('appfront.form.directives', []).
                 var parent = elem.find('div.input-group');
                 parent.append(content);
             });
-
-
+			scope.helper = {
+				isopen: false
+			};
 			scope.hasfocus = false;
 			scope.haserror = false;
 			scope.isedited = false;
@@ -48,10 +50,9 @@ angular.module('appfront.form.directives', []).
 			scope.placeholderWrapper = scope.floatingTitle ? "" : scope.placeholder;
 			if(!scope.inputType)
 				scope.inputType = "text";
-			scope.$watch("model", function() {
-				
+			
+			scope.$watch("model", function() {	
 				scope.validate();
-
 			});
 
 			scope.evaluateState = function() {
@@ -103,8 +104,12 @@ angular.module('appfront.form.directives', []).
 			model: "=afModel",
 			value: "@afValue",
 			icon: "@afIcon",
+			mode: "@afMode",
+			modelParent: "=afModelParent",
+			modelName: "@afModelName",
+			disabled: "=afDisabled"
 		},
-		template: '<div class="material-input material-input-checkbox {{ class }}" ng-class="{checked: isChecked()}" ng-click="toggle();">' +
+		template: '<div class="material-input material-input-checkbox {{ class }}" ng-class="{checked: isChecked(), \'input-disabled\': (disabled == true)}" ng-click="toggle();">' +
 					 '<label>{{ title }}</label>' +
 					 '<div class="material-checkbox-ink"></div>' +
 					 '<div class="material-checkbox-box">' +
@@ -119,20 +124,35 @@ angular.module('appfront.form.directives', []).
 			});
 
 			scope.toggle = function() {
+				if(scope.disabled == true)
+					return;
 				if(scope.value) {
 					if(!scope.isChecked())
 						scope.model = scope.value;
+					else if(scope.mode == "delete") {
+						if(!scope.modelParent || !scope.modelName)
+							throw "Must set af-model-parent and af-model-name on checkbox with mode 'delete'";
+						delete scope.modelParent[scope.modelName];
+					}
 				} else {
-					if(scope.model)
-						scope.model = false;
-					else
-						scope.model = true;	
+					if(scope.mode == "clear") {
+						if(scope.model)
+							delete scope.modelParent[scope.modelName];
+					} else {
+						if(scope.model)
+							scope.model = false;
+						else
+							scope.model = true;	
+					}
 				}
 				
 			}
 			scope.isChecked = function() {
 				if(scope.value)
 					return scope.model == scope.value;
+				if(scope.mode == "clear")
+					return scope.model == null;
+				
 				return scope.model != null && scope.model == true;
 			}
 		}

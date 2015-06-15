@@ -129,7 +129,7 @@ angular.module('appfront.filters', [])
 
 		}
 	})
-	.filter('date', function() {
+	.filter('isodate', function() {
 
 		return function(input) {
 			if(input == null || input.length < 10)

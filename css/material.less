@@ -19,6 +19,7 @@
 		color: #000;
 		height: auto;
 	}
+
 	.form-control:focus {
 		
 		box-shadow: none;
@@ -30,6 +31,21 @@
 	.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
 		background-color: transparent;
 	}
+		.form-control-inline {
+			float: left;
+			width: auto;	
+		}
+		select {
+			cursor: pointer;
+
+		}
+		select:disabled {
+			color: #ccc;
+		}
+		
+		select.form-control-inline {
+			border-bottom: 1px solid #ccc;
+		}
 
 	.input-group {
 		padding-left: 0;
@@ -288,6 +304,22 @@
 		border-bottom: 3px solid #fff;
 	}
 
+	.material-input-checkbox.input-disabled {
+		
+		.material-checkbox-box {
+			background-color: @c_box;
+			border-color: #ddd;
+			cursor: not-allowed;
+		}
+		label {
+			cursor: not-allowed;
+			color: #ddd;
+		}
+		&.checked .material-checkbox-box {
+			background-color: #ddd;
+		}
+	}
+
 
 
 	.box {
@@ -295,6 +327,7 @@
 		padding: 20px;
 		box-shadow: @s_box;
 		margin-bottom: 20px;
+		border-radius: 4px;
 	}
 
 	.box.box-single {
@@ -310,16 +343,24 @@
 			
 			margin: -20px -20px 0px -20px;
 			padding: 20px;
-			overflow: hidden;
+			
 			color: @c_primary;
 			border-bottom: 1px dotted #ccc;
+
 		}
+			.box .box-header:after{
+				clear: both;
+				content: "";
+				display: block;
+			}
 
 			.box-header .box-header-items {
 				float: right;
 
 			}
-				.box-header-items a {
+				.box-header-items a.item,
+				.box-header-items > .btn,
+				.box-header-items .btn-group {
 					float: right;
 					margin-left: 15px;
 					font-size: 12pt;
@@ -333,11 +374,13 @@
 					margin-top: 0;
 				}
 		.box .box-section {
-			margin: 0px -20px 0px -20px;
-			padding: 10px 20px 10px 20px;
+			margin: 20px -20px -20px -20px;
+			padding: 0px 20px 20px 20px;
 			aborder-bottom: 1px solid #ccc;
-			overflow: hidden;
+			//overflow: hidden;
 		}
+
+
 			.box .box-section-header {
 				
 				color: @c_primary;
@@ -357,6 +400,18 @@
 					font-weight: 500;
 				}
 
+				//.box .box-footer {
+				//	padding-top: 20px;
+				//	margin-bottom: -10px;
+				//}
+
+			.box-border-top {
+				border-top: 1px dotted #ccc;
+			}
+			.box-border-bottom {
+				border-bottom: 1px dotted #ccc;
+			}
+
 			.box-header h3 {
 
 				float: left;
@@ -374,7 +429,8 @@
 				}
 			}
 
-			.box-header-items a.btn {
+			.box-header-items a.btn,
+			.box-header-items .btn-group {
 				font-size: 10pt;
 				margin-top: -3px;
 				margin-bottom: -5px;
@@ -406,6 +462,16 @@
 			border-bottom: 1px solid @c_primaryDark;
 		}
 	}
+
+	.dropdown-menu {
+		box-shadow: 1px 1px 7px rgba(0,0,0,0.15);
+		border-radius: 0;
+		border: 1px solid #e2e2e2;
+		> li > a {
+			color: @c_primary;
+		}
+	}
+
 
 	.reversible-container {
 		
