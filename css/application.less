@@ -144,18 +144,19 @@
 	.toolbar {
 		margin-top: 10px;
 		margin-bottom: 20px;
-		padding-bottom: 10px;
+		
 		apadding-top: 10px;
-		float: left;
 		width: 100%;
-		clear: both;
 		box-sizing: border-box;
+		border-bottom: 1px solid #ccc;
+		height: 44px;
+
 
 	}
 
 		.toolbar.toolbar-box {
-			padding: 10px;
-			background-color: @c_box;
+			padding: 10px 0px;
+			
 		}
 	.toolbar-items a.btn {
 		margin-top: -7px;
@@ -175,41 +176,49 @@
 			margin-left: 15px;
 		}
 	}
+
+		.toolbar-items {
+			display: table-cell;
+		}
 		.toolbar-nav {
-			float: left;
-			margin-top: -20px;
-			margin-bottom: -20px;
+			text-align: center;
+			clear: both;
+			display: block;
+			width: 100%;
+			
+			height: 44px;
+			
 		}
 
 		.toolbar-nav a {
-			border-right: 1px solid #ccc;
-			display: block;
-			float: left;
-			padding: 20px;
+			
+			display: inline-block;
+			padding: 0px 10px 20px 10px;
+			margin-bottom: -1px;
+			border-bottom: 1px solid transparent;
+			position: relative;
+			top: -20px;
 		}
 
 
-			.toolbar-nav a:first-child {
-				border-left: 1px solid #ccc;
-			}
+			
 				.toolbar-nav a.active {
-					background-color: @c_primary;
-					color: #fff;
+					border-bottom: 1px solid @c_primary;
+					
 				}
 
 		.toolbar-items a {
-			font-weight: 500;
-			font-size: 13pt;
+			font-weight: 400;
+			font-size: 11pt;
 			
 		}
 
 		.toolbar.toolbar-top {
-			aborder-bottom: 1px inset #ccc;
-			padding-left: 20px;
-			padding-right: 20px;
-			background-color: @c_box;
-			padding: 20px;
-			box-shadow: @s_box;
+			
+			padding-left: 0px;
+			padding-right: 0px;
+			
+			
 
 		}
 
@@ -257,3 +266,20 @@
 		.kv.kv-border {
 			border-top: 1px dotted #ccc;
 		}
+
+@media(max-width:767px){
+	.toolbar-top {
+		height: auto;
+		overflow: hidden;
+		.toolbar-nav { 
+			height: auto;
+			a {
+			float: left;
+			clear: left;
+			position: inherit;
+			margin-top: 0;
+			display: block;
+			top: 0;
+		}}
+	}
+}
