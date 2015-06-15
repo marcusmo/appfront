@@ -108,17 +108,17 @@
 		
 		color: @c_error;
 	}
-.navbar.navbar-default {
+.navbar.navbar-high {
 	height: 80px;
 }
-.navbar-default .nav > li > a {
+.navbar-high .nav > li > a {
 	padding: 30px 15px;
 	font-size: 14pt;
 	font-weight: 300;
 	//color: #fff;
 }
 
-.navbar.navbar-default {
+.navbar.navbar-high {
 	background-color: @c_background;
 	border-bottom: 1px dotted #ccc;
 	//background-color: @c_primary;
@@ -232,3 +232,28 @@
     text-align:center;
     border-color: #ccc;
 }
+
+.kv {
+		overflow: hidden;
+	}
+	
+	.kv-key {
+		clear: both;
+		float: left;
+	}
+	.kv-value {
+		float: right;
+		clear: right;
+	}
+	.kv.kv-key-bold .kv-key {
+		font-weight: 600;
+	}
+	.kv.kv-value-bold .kv-value {
+		font-weight: 600;
+	}
+		.kv.kv-space {
+			margin-bottom: 1em;
+		}
+		.kv.kv-border {
+			border-top: 1px dotted #ccc;
+		}
