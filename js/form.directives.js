@@ -1,5 +1,5 @@
-angular.module('appfront.form.directives', []).
-	directive('afInputText', function() {
+angular.module('appfront.form', [])
+	.directive('afInputText', function() {
 	return {
 		restrict: 'A',
 		scope: {
@@ -13,7 +13,8 @@ angular.module('appfront.form.directives', []).
 			icon: "@afIcon",
 			disabled: "=afDisabled",
 			inputType: "@afInputType",
-			class: "@afClass"
+			class: "@afClass",
+			isRequired: "@required",
 			
 		},
 		template: '<div class="material-input {{class}}" ng-class="{icon: icon, disabled: disabled}" >' +
@@ -26,6 +27,7 @@ angular.module('appfront.form.directives', []).
 					'<div class="input-underline"></div>' + 
 					'<div class="input-underline input-underline-focus"></div>' + 
 					'<span ng-if="error.minlength" class="input-subtext input-error"><span ng-if="haserror" class="fa fa-exclamation-triangle"></span> Värdet är för kort</span>' + 
+					'<span ng-if="error.required" class="input-subtext input-error"><span ng-if="haserror" class="fa fa-exclamation-triangle"></span> Du måste fylla i ett värde</span>' + 
 					'<span ng-if="error.pattern" class="input-subtext input-error"><span ng-if="haserror" class="fa fa-exclamation-triangle"></span> {{ patternError }}</span>' + 
 				'</div></div>',
 		replace: true,
@@ -90,6 +92,12 @@ angular.module('appfront.form.directives', []).
 						scope.error.pattern = false;
 					}
 				}
+
+				if(scope.required != null) {
+					if(scope.model.length == 0)
+						scope.error.required = true;
+				}
+
 
 				scope.haserror = scope.isedited && (scope.error.minlength || scope.error.maxlength || scope.error.pattern);
 			}
@@ -306,4 +314,28 @@ angular.module('appfront.form.directives', []).
 			}
 		}
 	};
+})
+
+.provider('modelService', function() {
+	
+	
+	var ModelService = function(models) {
+		
+		this.get = function() {
+			return models;
+		}
+	};
+
+	this.models = [];
+	
+	this.$get = function() {
+		//var models = this.models;
+		return new ModelService(this.models);
+	}
+
+	this.model = function(model) {
+		this.models.push(model);
+		return this;
+	}
 });
+
