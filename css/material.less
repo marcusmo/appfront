@@ -19,6 +19,7 @@
 		color: #000;
 		height: auto;
 	}
+
 	.form-control:focus {
 		
 		box-shadow: none;
@@ -30,6 +31,21 @@
 	.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
 		background-color: transparent;
 	}
+		.form-control-inline {
+			float: left;
+			width: auto;	
+		}
+		select {
+			cursor: pointer;
+
+		}
+		select:disabled {
+			color: #ccc;
+		}
+		
+		select.form-control-inline {
+			border-bottom: 1px solid #ccc;
+		}
 
 	.input-group {
 		padding-left: 0;
@@ -288,6 +304,22 @@
 		border-bottom: 3px solid #fff;
 	}
 
+	.material-input-checkbox.input-disabled {
+		
+		.material-checkbox-box {
+			background-color: @c_box;
+			border-color: #ddd;
+			cursor: not-allowed;
+		}
+		label {
+			cursor: not-allowed;
+			color: #ddd;
+		}
+		&.checked .material-checkbox-box {
+			background-color: #ddd;
+		}
+	}
+
 
 
 	.box {
@@ -295,6 +327,7 @@
 		padding: 20px;
 		box-shadow: @s_box;
 		margin-bottom: 20px;
+		border-radius: 4px;
 	}
 
 	.box.box-single {
@@ -313,6 +346,7 @@
 			
 			color: @c_primary;
 			border-bottom: 1px dotted #ccc;
+
 		}
 			.box .box-header:after{
 				clear: both;
@@ -328,11 +362,11 @@
 				.box-header-items > .btn,
 				.box-header-items .btn-group {
 					float: right;
-					margin-left: 15px;
+					margin-left: 5px;
 					font-size: 12pt;
 					margin-top: 4px;
 					cursor: pointer;
-					color: @c_primary;
+					//color: @c_primary;
 				}
 
 				.box-header-items .form-group {
@@ -341,10 +375,11 @@
 				}
 		.box .box-section {
 			margin: 20px -20px -20px -20px;
-			padding: 10px 20px 20px 20px;
+			padding: 0px 20px 20px 20px;
 			aborder-bottom: 1px solid #ccc;
 			//overflow: hidden;
 		}
+
 
 			.box .box-section-header {
 				
@@ -373,7 +408,7 @@
 			.box-border-top {
 				border-top: 1px dotted #ccc;
 			}
-			.box-border-top {
+			.box-border-bottom {
 				border-bottom: 1px dotted #ccc;
 			}
 
