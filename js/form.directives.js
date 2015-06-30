@@ -1,20 +1,19 @@
 angular.module('appfront.form', [])
-	.directive('afInputText', function() {
+	.directive('afInputText', function($modelService) {
 	return {
 		restrict: 'A',
 		scope: {
 			title: "@afTitle",
 			placeholder: "@afPlaceholder",
 			model: "=afModel",
-			pattern: "@afPattern",
-			patternError: "@afPatternError",
 			minlength: "@afMinLength",
 			floatingTitle: "@afFloatingTitle",
 			icon: "@afIcon",
 			disabled: "=afDisabled",
 			inputType: "@afInputType",
 			class: "@afClass",
-			isRequired: "@required",
+			isRequired: "@afRequired",
+			dataType: "@afType",
 			
 		},
 		template: '<div class="material-input {{class}}" ng-class="{icon: icon, disabled: disabled}" >' +
@@ -26,29 +25,36 @@ angular.module('appfront.form', [])
 					'</div>' +
 					'<div class="input-underline"></div>' + 
 					'<div class="input-underline input-underline-focus"></div>' + 
-					'<span ng-if="error.minlength" class="input-subtext input-error"><span ng-if="haserror" class="fa fa-exclamation-triangle"></span> Värdet är för kort</span>' + 
-					'<span ng-if="error.required" class="input-subtext input-error"><span ng-if="haserror" class="fa fa-exclamation-triangle"></span> Du måste fylla i ett värde</span>' + 
-					'<span ng-if="error.pattern" class="input-subtext input-error"><span ng-if="haserror" class="fa fa-exclamation-triangle"></span> {{ patternError }}</span>' + 
+					'<span ng-if="haserror" class="input-subtext input-error"><span ng-if="haserror" class="fa fa-exclamation-triangle"></span> {{ error }}</span>' + 
 				'</div></div>',
 		replace: true,
 		transclude: true,
 		link: function(scope, elem, attr, controller, transcludeFn) {
 
 			transcludeFn( scope, function( content ) {
-                var parent = elem.find('div.input-group');
-                parent.append(content);
-            });
+				var parent = elem.find('div.input-group');
+				parent.append(content);
+			});
 			scope.helper = {
 				isopen: false
 			};
 			scope.hasfocus = false;
 			scope.haserror = false;
 			scope.isedited = false;
-			scope.error = {
-				minlength: false,
-				maxlength: false,
-				pattern: false,
+
+			findValidationModel = function() {
+				if(elem.attr("af-validation-model") != null)
+					return elem.attr("af-validation-model");
+				var searchElement = elem.parent("[@af-validation-model]");
+				if(searchElement != null)
+					return searchElement.attr("af-validation-model");
+				return null;
 			}
+
+			scope.validationModel = findValidationModel();
+
+			
+			
 			scope.placeholderWrapper = scope.floatingTitle ? "" : scope.placeholder;
 			if(!scope.inputType)
 				scope.inputType = "text";
@@ -72,35 +78,22 @@ angular.module('appfront.form', [])
 				scope.isedited = true;
 				scope.validate();
 			}
+			
 			scope.validate = function() {
-				if(scope.model == null)
-					return;
 				
-				if(scope.minlength != null) {
-					var ml = parseInt(scope.minlength);
-					if(scope.model.length < ml && scope.model.length > 0) {
-						scope.error.minlength = true;
-					} else {
-						scope.error.minlength = false;
-					}
-				}
-				if(scope.pattern != null) {
-					var re = new RegExp(scope.pattern);
-					if(scope.model.length > 0 && !re.test(scope.model)) {
-						scope.error.pattern = true;
-					} else {
-						scope.error.pattern = false;
-					}
-				}
+				if(scope.dataType == null) 
+					return;
 
-				if(scope.required != null) {
-					if(scope.model.length == 0)
-						scope.error.required = true;
-				}
+				scope.error = $modelService.validate(scope.dataType, scope.model, scope.isRequired != null && scope.isRequired == "true");
+				
+				if(scope.validationModel != null)
+					$modelService.report(scope.validationModel, "fld_" + scope.$id, scope.error);
+				
+				scope.haserror = scope.isedited && scope.error != null;
 
-
-				scope.haserror = scope.isedited && (scope.error.minlength || scope.error.maxlength || scope.error.pattern);
 			}
+
+
 		}
 	};		
 }).directive('afCheckbox', function() {
@@ -180,11 +173,11 @@ angular.module('appfront.form', [])
 				  '</table>',
 		//replace: true,
 		transclude: true,
-	    link: function(scope, elem, attr, controller, transcludeFn) {
+		link: function(scope, elem, attr, controller, transcludeFn) {
 			
 			transcludeFn( scope, function( content ) {
-                elem.prepend( content );
-            });
+				elem.prepend( content );
+			});
 
 			scope.selection = [];
 			scope.sort = {
@@ -264,7 +257,7 @@ angular.module('appfront.form', [])
 		template: '<a ng-click="dosort();"><span ng-transclude></span> {{ arrow }}<a>',
 		transclude: true,
 		replace: false,
-	    link: function(scope, elem, attr, controller, transcludeFn) {
+		link: function(scope, elem, attr, controller, transcludeFn) {
 			
 			var dir_up = "\u25b2";
 			var dir_down = "\u25bC";
@@ -303,12 +296,8 @@ angular.module('appfront.form', [])
 		scope: {
 			"afClass": "@",
 		},
-	    link: function(scope, elem, attr, controller, transcludeFn) {
-	    	//transcludeFn( scope, function( content ) {
-                
-              //  elem.find("div.reversible-flipper").append( content );
-            //});
-	    	scope.isFlipped = false;
+		link: function(scope, elem, attr, controller, transcludeFn) {
+			scope.isFlipped = false;
 			scope.flip = function() {
 				scope.isFlipped = !scope.isFlipped;
 			}
@@ -316,26 +305,249 @@ angular.module('appfront.form', [])
 	};
 })
 
-.provider('modelService', function() {
+.directive('afModelIsValid', function($modelService) {
+	return {
+		restrict: 'A',
+		scope: { "modelName": "@afModelIsValid" },
+		link: function(scope, elem, attr, controller) {
+			scope.$on("onModelValidation", function() {
+				var valid = $modelService.isModelValid(scope.modelName);
+				if(valid) 
+					elem.css('display', '');
+				else 
+					elem.css('display', 'none');
+			});
+		}
+	}
+})
+
+.directive('afModelIsNotValid', function($modelService) {
+	return {
+		restrict: 'A',
+		scope: { "modelName": "@afModelIsNotValid" },
+		link: function(scope, elem, attr, controller) {
+			scope.$on("onModelValidation", function() {
+				var valid = $modelService.isModelValid(scope.modelName);
+				if(!valid) 
+					elem.css('display', '');
+				else 
+					elem.css('display', 'none');
+			});
+		}
+	}
+})
+
+.directive('afClick', function($parse, $rootScope) {
+	return {
+		restrict: 'A',
+		compile: function($element, attr) {
+
+			var fn = $parse(attr["afClick"], /* interceptorFn */ null, /* expensiveChecks */ true);
+			var text = $element[0].innerText;
+			var workingText = attr["afClickText"];
+			var findTrigger = function(element) {
+				if(element.getAttribute("af-click") != null)
+					return element;
+				return findTrigger(element.parentNode);
+			}
+			return function ngEventHandler(scope, element) {
+				
+				element.on("click", function(event, element) {
+					var callback = function() {
+						var ret = fn(scope, {$event:event});
+
+						if(ret.then) {
+							//IE 8 Does not support event.currentTarget
+							var el = angular.element(findTrigger(event.srcElement));
+							if(workingText != null)
+								el.text(workingText);
+							el.addClass("af-working");
+							el.attr("disabled", true);
+							var reset = function() {
+								if(workingText != null) 
+									el.text(text);
+								el.removeClass("af-working");
+								el.attr("disabled", null);
+							}
+							ret.then(reset, reset);
+						}
+							
+					};
+				  
+					scope.$apply(callback);
+				});
+			};
+		}
+	}
+})
+
+
+.provider('$modelService', function() {
 	
-	
-	var ModelService = function(models) {
+	var ModelService = function(types, validators, rootScope) {
 		
-		this.get = function() {
-			return models;
+		validationModels = {};
+
+		this.validate = function(typeName, input, required) {
+			
+			var tp = types[typeName];
+
+			if(tp == null)
+				return null;
+
+			if(required != null && required == true && (input == null || input.length == 0))
+				return tp.required;
+			if(input == null)
+				return null;
+
+			for(var key in tp) {
+				if(typeof tp[key] === 'object') {
+					var validator = validators[key];
+					if(validator != null) {
+						var res = validator(input, tp[key]);
+						if(res != null)
+							return res;
+					}
+				}
+			}
+
+			return null;
+
+		}
+
+		this.report = function(validationModel, instance, error) {
+			if(validationModels[validationModel] == null)
+				validationModels[validationModel] = {};
+
+			validationModels[validationModel][instance] = error;
+			rootScope.$broadcast('onModelValidation');
+		}
+
+		this.isModelValid = function(validationModel) {
+			
+			var model = validationModels[validationModel];
+			for(var key in model) {
+				if(model[key] != null)
+					return false;
+			}
+			return true;
 		}
 	};
 
-	this.models = [];
 	
-	this.$get = function() {
-		//var models = this.models;
-		return new ModelService(this.models);
+	this.types = {};
+	this.validators = {
+		pattern: function(input, p) {
+			if(!p.exp.test(input))
+				return p.message;
+			return null;
+		},
+		length: function(input, p) {
+			if(p.min) {
+				if(input.length < p.min.length)
+				return p.min.message;	
+			}
+			if(p.max) {
+				if(input.length > p.max.length)
+				return p.max.message;
+			}
+			return null;
+		}
+
+	};
+
+	var staticRoot = {
+			
+	};
+	
+	this.$get = function($injector) {
+		var rscope = $injector.get('$rootScope');
+		return new ModelService(this.types, this.validators, rscope);
 	}
 
-	this.model = function(model) {
-		this.models.push(model);
+	this.validator = function(name, func) {
+		this.validators[name] = func;
 		return this;
 	}
+
+	this.type = function(name, type) {
+		this.types[name] = this.buildType("$root." + name, type);
+		return this;
+	}
+
+
+	this.buildType = function(path, input) {
+		
+		var dotIndex = path.lastIndexOf(".");
+		var currentLevel = null;
+		var remainder = null;
+		
+		if(dotIndex != -1) {
+			currentLevel = path.substr(dotIndex + 1);
+			remainder = path.substr(0, dotIndex);
+		} else {
+			currentLevel = path;
+		}
+
+		var type = this.types[currentLevel];
+		if(type == null)
+			type = {};
+
+		var merged = deepmerge(type, input);
+
+		if(remainder != null)
+			return this.buildType(remainder, merged);
+
+		return merged;
+	}
+	
+
+	function deepmerge(target, src) {
+		
+		var array = Array.isArray(src);
+		var dst = array && [] || {};
+
+		if (array) {
+			target = target || [];
+			dst = dst.concat(target);
+			angular.forEach(src, function(e, i, obj) {
+				if (typeof dst[i] === 'undefined') {
+					dst[i] = e;
+				} else if (typeof e === 'object') {
+					dst[i] = deepmerge(target[i], e);
+				} else {
+					if (target.indexOf(e) === -1) {
+						dst.push(e);
+					}
+				}
+			});
+		} else {
+			if (target && typeof target === 'object') {
+				angular.forEach(Object.keys(target), (function (key) {
+					if(!src[key])
+						dst[key] = target[key];
+				}));
+			}
+			Object.keys(src).forEach(function (key) {
+				if (typeof src[key] !== 'object' || !src[key]) {
+					dst[key] = src[key];
+				}
+				else {
+					if (!target[key]) {
+						dst[key] = src[key];
+					} else {
+						dst[key] = deepmerge(target[key], src[key]);
+					}
+				}
+			});
+		}
+
+		return dst;
+	}
+
+
+
+
+
 });
 
