@@ -42,16 +42,15 @@ angular.module('appfront.form', [])
 			scope.haserror = false;
 			scope.isedited = false;
 
-			findValidationModel = function() {
-				if(elem.attr("af-validation-model") != null)
-					return elem.attr("af-validation-model");
-				var searchElement = elem.parent("[@af-validation-model]");
-				if(searchElement != null)
-					return searchElement.attr("af-validation-model");
-				return null;
+			findValidationModel = function(el) {
+				if(el.getAttribute("af-validation-model") != null)
+					return el.getAttribute("af-validation-model");
+				if(el.parentNode == null || el.parentNode.getAttribute == null)
+					return null;
+				return findValidationModel(el.parentNode);
 			}
 
-			scope.validationModel = findValidationModel();
+			scope.validationModel = findValidationModel(elem[0]);
 
 			
 			
@@ -356,7 +355,7 @@ angular.module('appfront.form', [])
 					var callback = function() {
 						var ret = fn(scope, {$event:event});
 
-						if(ret.then) {
+						if(typeof ret !== "undefined" && ret.then) {
 							//IE 8 Does not support event.currentTarget
 							var el = angular.element(findTrigger(event.srcElement));
 							if(workingText != null)
