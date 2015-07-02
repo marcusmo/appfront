@@ -1,4 +1,15 @@
 angular.module('appfront.form', [])
+	.directive('afInbutBase', function($modelService) {
+		return {
+			restrict: 'E',
+			controller: function($scope) {
+
+
+
+			},
+			link: function() {}
+		}
+	})
 	.directive('afInputText', function($modelService) {
 	return {
 		restrict: 'A',
@@ -19,7 +30,7 @@ angular.module('appfront.form', [])
 		template: '<div class="material-input {{class}}" ng-class="{icon: icon, disabled: disabled}" >' +
 					'<span ng-if="icon" class="fa fa-{{icon}} fa-lg material-icon"/>' +
 					'<div class="form-group form-group-material" ng-class="{ focus: hasfocus, error: haserror, floatingtitle: floatingTitle, hasvalue: model > 0 || model.length > 0}">' +
-					'<label>{{ title }}</label>' +
+					'<label>{{ title }}<span ng-if="isRequired" class="required">*</span></label>' +
 					'<div class="input-group">' +
 						'<input class="form-control" type="{{inputType}}" ng-model="model" placeholder="{{ placeholderWrapper }}" ng-focus="focus();" ng-blur="blur();" ng-disabled="disabled"></input>' +
 					'</div>' +
@@ -35,9 +46,8 @@ angular.module('appfront.form', [])
 				var parent = elem.find('div.input-group');
 				parent.append(content);
 			});
-			scope.helper = {
-				isopen: false
-			};
+
+	
 			scope.hasfocus = false;
 			scope.haserror = false;
 			scope.isedited = false;
@@ -51,16 +61,25 @@ angular.module('appfront.form', [])
 			}
 
 			scope.validationModel = findValidationModel(elem[0]);
-
-			
+						
+			if(scope.validationModel != null) {
+				scope.$on("onForcedModelValidation", function(event, param) {
+					if(param.modelName == null || param.modelName == scope.validationModel) {
+						scope.isedited = true;
+						scope.validate();
+					}
+				});
+			}
 			
 			scope.placeholderWrapper = scope.floatingTitle ? "" : scope.placeholder;
+			
 			if(!scope.inputType)
 				scope.inputType = "text";
 			
 			scope.$watch("model", function() {	
 				scope.validate();
 			});
+					
 
 			scope.evaluateState = function() {
 				if(scope.model == null || scope.floatingTitle && scope.model.length == 0 && scope.hasfocus || !scope.floatingTitle)
@@ -430,6 +449,11 @@ angular.module('appfront.form', [])
 					return false;
 			}
 			return true;
+		}
+
+		this.validateModel = function(modelName) {
+			rootScope.$broadcast('onForcedModelValidation', { 'modelName': modelName});
+			return this.isModelValid(modelName);
 		}
 	};
 

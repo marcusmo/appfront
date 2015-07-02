@@ -52,11 +52,18 @@ var exampleApp = angular.module('appfront.examples',
 	});
 
 
+
+
 	$scope.longoperation = function(message) {
-		console.log("Starting work");
-		return $timeout(function() {
-			console.log("Done: " + message );
-		}, 2000);
+		if($modelService.validateModel("person")) {
+			console.log("Starting work");
+			return $timeout(function() {
+				console.log("Done: " + message );
+			}, 2000);	
+		} else {
+			$scope.title = "Check inputs and try again!";
+		}
+		
 	}
 
 	
