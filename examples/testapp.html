@@ -19,8 +19,9 @@
 			<div class="col-md-12">
 				<h1>{{ title }}</h1>
 				<div af-validation-model="person">
+					<input af-input-text af-model="person.firstName" af-placeholder="E-post" af-title="Namn" af-floating-title="true" af-required="true" />
 					<input af-input-text af-model="person.email" af-placeholder="E-post" af-title="E-post" af-floating-title="true" af-type="email" />
-					<input af-input-text af-model="person.pnr" af-placeholder="YYYYMMDD-NNNN" af-title="Personnummer" af-floating-title="true" af-type="pnr" af-required="true"	/>
+					<input af-input-text af-model="person.pnr" af-placeholder="YYYYMMDD-NNNN" af-title="Personnummer" af-floating-title="true" af-type="pnr"	/>
 					<input af-input-text af-model="person.email2" af-placeholder="E-post" af-title="E-post" af-floating-title="true" af-type="email.alt" af-validation-model="anothermodel" />
 					<input af-input-text af-model="person.name" af-placeholder="Namn" af-title="Namn" af-floating-title="true" af-type="firstName" af-validation-model="anothermodel" />
 				</div>
@@ -39,7 +40,9 @@
 					<span class="af-working-invisible">Spara</span>
 				</button>
 
-				<button af-click="long2()" class="btn btn-warning" af-click-text="Working...">Test</button>
+				<button af-click="long2()" class="btn btn-warning" af-click-text="Working...">
+						Test
+				</button>
 
 			</div>
 		</div>

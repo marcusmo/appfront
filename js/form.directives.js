@@ -98,9 +98,6 @@ angular.module('appfront.form', [])
 			}
 			
 			scope.validate = function() {
-				
-				if(scope.dataType == null) 
-					return;
 
 				scope.error = $modelService.validate(scope.dataType, scope.model, scope.isRequired != null && scope.isRequired == "true");
 				
@@ -409,6 +406,9 @@ angular.module('appfront.form', [])
 		this.validate = function(typeName, input, required) {
 			
 			var tp = types[typeName];
+
+			if(tp == null)
+				tp = types["$root"];
 
 			if(tp == null)
 				return null;
