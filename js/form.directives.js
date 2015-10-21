@@ -47,6 +47,7 @@ angular.module('appfront.form', [])
 				parent.append(content);
 			});
 
+			scope.helper = {};
 	
 			scope.hasfocus = false;
 			scope.haserror = false;
@@ -123,6 +124,7 @@ angular.module('appfront.form', [])
 			mode: "@afMode",
 			modelParent: "=afModelParent",
 			modelName: "@afModelName",
+			invert: "@afInvert",
 			disabled: "=afDisabled"
 		},
 		template: '<div class="material-input material-input-checkbox {{ class }}" ng-class="{checked: isChecked(), \'input-disabled\': (disabled == true)}" ng-click="toggle();">' +
@@ -138,8 +140,9 @@ angular.module('appfront.form', [])
 			scope.$watch("model", function() {
 				
 			});
+			
 
-			scope.toggle = function() {
+			scope.toggleOld = function() {
 				if(scope.disabled == true)
 					return;
 				if(scope.value) {
@@ -148,6 +151,7 @@ angular.module('appfront.form', [])
 					else if(scope.mode == "delete") {
 						if(!scope.modelParent || !scope.modelName)
 							throw "Must set af-model-parent and af-model-name on checkbox with mode 'delete'";
+
 						delete scope.modelParent[scope.modelName];
 					}
 				} else {
@@ -163,13 +167,42 @@ angular.module('appfront.form', [])
 				}
 				
 			}
-			scope.isChecked = function() {
-				if(scope.value)
+
+			scope.toggle = function() {
+				if(scope.disabled == true)
+					return;
+				invert = scope.invert == "true";
+				value = scope.value != null ? scope.value : true;
+				if(scope.mode == "clear")  {
+					if(scope.isChecked() ^ invert)
+						delete scope.modelParent[scope.modelName];
+					else
+						scope.model = value;
+				} else if(scope.mode == "toggle") {
+					scope.model = !(scope.isChecked() ^ invert);
+				} else {
+					if(!(scope.isChecked() ^ invert))
+						scope.model = value;
+				}
+			}
+
+			scope.isCheckedOld = function() {
+				if(scope.mode == "")
 					return scope.model == scope.value;
 				if(scope.mode == "clear")
 					return scope.model == null;
 				
 				return scope.model != null && scope.model == true;
+			}
+			scope.isChecked = function() {
+				invert = scope.invert == "true";
+				if(scope.mode == "clear")
+					return scope.modelParent[scope.modelName] != null ^ invert;
+				else if(scope.mode == "toggle")
+					return scope.model ^ invert;
+				else
+					return scope.model == scope.value ^ invert;
+				
 			}
 		}
 	};		
