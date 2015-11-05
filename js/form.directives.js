@@ -333,6 +333,30 @@ angular.module('appfront.form', [])
 			}
 		}
 	};		
+}).directive('afBoxCollapsingSection', function() {
+	return {
+		restrict: 'A',
+		template: '<div class="box-section {{afClass}}" >' +
+			'<div class="section-header" ng-click="toggle();">' + 
+			'<h4 class="collapsing-section-header">' +
+			' <span class="fa fa-chevron-right" ng-hide="isExpanded"></span>' + 
+			' <span class="fa fa-chevron-down" ng-show="isExpanded"></span>' +
+			' {{ title }}' +
+			'</h4></div>' +
+			'<div ng-show="isExpanded"><div ng-transclude></div></div>',
+		replace: true,
+		transclude: true,
+		scope: {
+			"afClass": "@",
+			title: "@afTitle"
+		},
+		link: function(scope, elem, attr, controller, transcludeFn) {
+			scope.isExpanded = false;
+			scope.toggle = function() {
+				scope.isExpanded = !scope.isExpanded;
+			}
+		}
+	};
 }).directive('afReversibleCard', function() {
 	return {
 		restrict: 'A',
